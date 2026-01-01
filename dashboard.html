@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Corporativo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-gray-100 flex items-center justify-center">
+
+  <main class="bg-white shadow-xl rounded-xl p-8 max-w-md w-full text-center">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">
+      Panel de Usuario
+    </h1>
+
+    <p id="userInfo" class="text-gray-600 mb-6">
+      Cargando información del usuario...
+    </p>
+
+    <button
+      id="logoutBtn"
+      class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition"
+    >
+      Cerrar sesión
+    </button>
+  </main>
+
+  <script type="module">
+    // =========================
+    // Config
+    // =========================
+    const API_BASE_URL = "https://login-agenda-backend.onrender.com/api/v1";
+
+    // =========================
+    // Guard de sesión
+    // =========================
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      window.location.href = "/";
+    }
+
+    // =========================
+    // Obtener usuario
+    // =========================
+    async function fetchUser() {
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        localStorage.removeItem("access_token");
+        window.location.href = "/";
+        return;
+      }
+
+      const user = await response.json();
+      document.getElementById("userInfo").textContent =
+        `Sesión iniciada como: ${user.email}`;
+    }
+
+    // =========================
+    // Logout
+    // =========================
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("access_token");
+      window.location.href = "/";
+    });
+
+    fetchUser();
+  </script>
+
+</body>
+</html>

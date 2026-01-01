@@ -139,64 +139,111 @@
 
   </main>
 
-  <script>
-    // --- NUEVO CÓDIGO PARA LA TRANSICIÓN ---
+  <script type="module">
+    // =========================
+    // Configuración API
+    // =========================
+    const API_BASE_URL = "https://login-agenda-backend.onrender.com/api/v1";
+    
+    async function loginRequest(email, password) {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+    
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.detail || "Credenciales inválidas");
+      }
+    
+      return response.json();
+    }
+  
+    // =========================
+    // Transición de entrada
+    // =========================
     document.addEventListener("DOMContentLoaded", () => {
-        const loginContainer = document.getElementById("loginContainer");
-        // Aseguramos que la transición se aplique DESPUÉS de que la página haya cargado
-        setTimeout(() => {
-            loginContainer.classList.remove("initial-hidden");
-            loginContainer.classList.add("show-form");
-        }, 10); // Un pequeño retraso para asegurar que las clases se reconozcan
+      const loginContainer = document.getElementById("loginContainer");
+      setTimeout(() => {
+        loginContainer.classList.remove("initial-hidden");
+        loginContainer.classList.add("show-form");
+      }, 10);
     });
-
-    // --- CÓDIGO DE VALIDACIÓN EXISTENTE ---
+  
+    // =========================
+    // Elementos DOM
+    // =========================
     const form = document.getElementById("loginForm");
     const usuario = document.getElementById("usuario");
     const password = document.getElementById("password");
     const errorDiv = document.getElementById("error");
     const buttonText = document.getElementById("buttonText");
-
-    form.addEventListener("submit", (e) => {
+  
+    // =========================
+    // Submit Login
+    // =========================
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      errorDiv.classList.add("hidden");
-
-      const user = usuario.value.trim();
+      ocultarError();
+    
+      const email = usuario.value.trim();
       const pass = password.value.trim();
-
-      if (!user || !pass) {
+    
+      // ---- Validaciones UX ----
+      if (!email || !pass) {
         mostrarError("Todos los campos son obligatorios.");
         return;
       }
-
-      if (user.length < 3) {
+    
+      if (email.length < 3) {
         mostrarError("El usuario debe tener al menos 3 caracteres.");
         return;
       }
-
+    
       if (pass.length < 6) {
         mostrarError("La contraseña debe tener al menos 6 caracteres.");
         return;
       }
-
-      // Simulación de carga (Mejora el look profesional)
-      buttonText.textContent = "Cargando...";
-      const originalButtonText = "ACCEDER";
-
-      setTimeout(() => {
-        // Simulación correcta
-        alert("Login válido (solo frontend). ¡Redirigiendo!");
-        form.reset();
-        buttonText.textContent = originalButtonText; // Restaurar texto
-      }, 1500); // 1.5 segundos de carga simulada
-
+    
+      // ---- Estado de carga ----
+      buttonText.textContent = "Verificando...";
+      form.querySelector("button").disabled = true;
+    
+      try {
+        const data = await loginRequest(email, pass);
+      
+        // Guardar token
+        localStorage.setItem("access_token", data.access_token);
+      
+        // Redirección segura
+        window.location.href = "/dashboard.html";
+      } catch (err) {
+        mostrarError(err.message);
+        buttonText.textContent = "ACCEDER";
+        form.querySelector("button").disabled = false;
+      }
     });
-
+  
+    // =========================
+    // Helpers UX
+    // =========================
     function mostrarError(mensaje) {
       errorDiv.textContent = mensaje;
       errorDiv.classList.remove("hidden");
     }
+  
+    function ocultarError() {
+      errorDiv.classList.add("hidden");
+      errorDiv.textContent = "";
+    }
   </script>
+
 
 </body>
 </html>
