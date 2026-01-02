@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Acceso Corporativo</title>
+  <title>Crear Nueva Cuenta</title>
 
   <link
     href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css"
@@ -16,15 +16,13 @@
       theme: {
         extend: {
           colors: {
-            corporativo: "#005691", // Azul corporativo más profundo y serio
-            corporativoDark: "#153d60", // Un azul casi navy, para el hover
-            grisTexto: "#333333", // Negro sobrio para el texto
-            grisBorde: "#dddddd", // Borde muy claro
+            corporativo: "#005691",
+            corporativoDark: "#153d60",
+            grisTexto: "#333333",
+            grisBorde: "#dddddd",
           },
           boxShadow: {
-            // Sombra más elegante, típica de tarjetas de apps profesionales
             suave: "0 10px 30px rgba(0,0,0,0.08)",
-            // Sombra para el focus del input
             inputFocus: "0 0 0 3px rgba(0, 86, 145, 0.2)",
           },
         },
@@ -43,13 +41,12 @@
       },
     };
   </script>
+
   <style>
-    /* Ocultamos el main al cargar para evitar el 'flash' sin animación */
     .initial-hidden {
         opacity: 0;
-        transform: scale(0.95); /* Empieza un poco más pequeño */
+        transform: scale(0.95);
     }
-    /* Clase para la transición que se aplica con JS */
     .show-form {
         opacity: 1;
         transform: scale(1);
@@ -59,7 +56,7 @@
 
 <body class="min-h-screen bg-gray-50 flex items-center justify-center px-4 text-grisTexto">
 
-  <main id="loginContainer" class="w-full max-w-sm initial-hidden transition-all duration-700 ease-out">
+  <main id="registerContainer" class="w-full max-w-sm initial-hidden transition-all duration-700 ease-out">
     <section
       class="bg-white border border-grisBorde rounded-2xl shadow-suave p-10 transition-all"
       style="min-width: 380px;"
@@ -67,27 +64,42 @@
 
       <header class="text-center mb-8">
         <h1 class="text-3xl font-extrabold tracking-tight text-corporativoDark">
-          <span class="text-corporativo">Inicio</span> de Sesión
+          <span class="text-corporativo">Crear</span> Nueva Cuenta
         </h1>
         <p class="text-sm text-gray-500 mt-2">
-          Acceso seguro a su portal corporativo
+          Complete el formulario para registrarse
         </p>
       </header>
 
-      <form id="loginForm" class="space-y-6" novalidate>
+      <form id="registerForm" class="space-y-6" novalidate>
 
         <div>
-          <label for="usuario" class="block text-sm font-medium mb-1 text-grisTexto">
-            Usuario
+          <label for="nombre" class="block text-sm font-medium mb-1 text-grisTexto">
+            Nombre Completo
           </label>
           <input
             type="text"
-            id="usuario"
+            id="nombre"
             class="w-full px-4 py-2.5 bg-white text-grisTexto border border-grisBorde rounded-lg
                    focus:outline-none focus:border-corporativo focus:ring-0 shadow-sm
                    focus:shadow-inputFocus
                    transition duration-200 ease-in-out"
-            placeholder="Ingrese su correo electrónico o usuario"
+            placeholder="Ingrese su nombre completo"
+          />
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium mb-1 text-grisTexto">
+            Correo Electrónico
+          </label>
+          <input
+            type="email"
+            id="email"
+            class="w-full px-4 py-2.5 bg-white text-grisTexto border border-grisBorde rounded-lg
+                   focus:outline-none focus:border-corporativo focus:ring-0 shadow-sm
+                   focus:shadow-inputFocus
+                   transition duration-200 ease-in-out"
+            placeholder="Ingrese su correo electrónico"
           />
         </div>
 
@@ -102,20 +114,23 @@
                    focus:outline-none focus:border-corporativo focus:ring-0 shadow-sm
                    focus:shadow-inputFocus
                    transition duration-200 ease-in-out"
-            placeholder="Ingrese su contraseña"
+            placeholder="Cree una contraseña"
           />
         </div>
 
-        <div class="text-right">
-          <a href="recuperacion.html" class="text-xs font-semibold text-corporativo hover:text-corporativoDark transition">
-            ¿Olvidó su contraseña?
-          </a>
-        </div>
-
-        <div class="text-right">
-          <a href="register.html" class="text-xs font-semibold text-corporativo hover:text-corporativoDark transition">
-            Crear Cuenta
-          </a>
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium mb-1 text-grisTexto">
+            Confirmar Contraseña
+          </label>
+          <input
+            type="password"
+            id="confirmPassword"
+            class="w-full px-4 py-2.5 bg-white text-grisTexto border border-grisBorde rounded-lg
+                   focus:outline-none focus:border-corporativo focus:ring-0 shadow-sm
+                   focus:shadow-inputFocus
+                   transition duration-200 ease-in-out"
+            placeholder="Repita su contraseña"
+          />
         </div>
 
         <div
@@ -132,8 +147,15 @@
                  hover:bg-corporativoDark hover:shadow-lg
                  active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-corporativo/30"
         >
-          <span id="buttonText">ACCEDER</span>
+          <span id="buttonText">REGISTRARSE</span>
         </button>
+
+        <p class="text-xs text-gray-500 text-center mt-4">
+          ¿Ya tiene una cuenta?
+          <a href="index.html" class="text-corporativo font-semibold hover:text-corporativoDark transition">
+            Iniciar Sesión
+          </a>
+        </p>
 
       </form>
 
@@ -146,110 +168,84 @@
   </main>
 
   <script type="module">
-    // =========================
-    // Configuración API
-    // =========================
     const API_BASE_URL = "https://login-agenda-backend.onrender.com/api/v1";
 
-    async function loginRequest(email, password) {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    async function registerRequest(nombre, email, password) {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }), // ← quitar nombre
       });
-
+    
       if (!response.ok) {
         const err = await response.json();
-        throw new Error(err.detail || "Credenciales inválidas");
+        throw new Error(err.detail || "Error al crear la cuenta");
       }
-
+    
       return response.json();
     }
 
-    // =========================
-    // Transición de entrada
-    // =========================
     document.addEventListener("DOMContentLoaded", () => {
-      const loginContainer = document.getElementById("loginContainer");
+      const container = document.getElementById("registerContainer");
       setTimeout(() => {
-        loginContainer.classList.remove("initial-hidden");
-        loginContainer.classList.add("show-form");
+        container.classList.remove("initial-hidden");
+        container.classList.add("show-form");
       }, 10);
     });
 
-    // =========================
-    // Elementos DOM
-    // =========================
-    const form = document.getElementById("loginForm");
-    const usuario = document.getElementById("usuario");
+    const form = document.getElementById("registerForm");
+    const nombre = document.getElementById("nombre");
+    const email = document.getElementById("email");
     const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
     const errorDiv = document.getElementById("error");
     const buttonText = document.getElementById("buttonText");
 
-    // =========================
-    // Submit Login
-    // =========================
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       ocultarError();
 
-      const email = usuario.value.trim();
+      const n = nombre.value.trim();
+      const em = email.value.trim();
       const pass = password.value.trim();
+      const pass2 = confirmPassword.value.trim();
 
-      // ---- Validaciones UX ----
-      if (!email || !pass) {
+      if (!n || !em || !pass || !pass2) {
         mostrarError("Todos los campos son obligatorios.");
         return;
       }
-
-      if (email.length < 3) {
-        mostrarError("El usuario debe tener al menos 3 caracteres.");
-        return;
-      }
-
       if (pass.length < 6) {
         mostrarError("La contraseña debe tener al menos 6 caracteres.");
         return;
       }
+      if (pass !== pass2) {
+        mostrarError("Las contraseñas no coinciden.");
+        return;
+      }
 
-      // ---- Estado de carga ----
-      buttonText.textContent = "Verificando...";
+      buttonText.textContent = "Creando cuenta...";
       form.querySelector("button").disabled = true;
 
       try {
-        const data = await loginRequest(email, pass);
-
-        // Guardar token
-        localStorage.setItem("access_token", data.access_token);
-
-        // Redirección segura
-        window.location.href = "/dashboard.html";
+        await registerRequest(n, em, pass);
+        window.location.href = "/index.html"; // login
       } catch (err) {
         mostrarError(err.message);
-        buttonText.textContent = "ACCEDER";
+        buttonText.textContent = "REGISTRARSE";
         form.querySelector("button").disabled = false;
       }
     });
 
-    // =========================
-    // Helpers UX
-    // =========================
     function mostrarError(mensaje) {
       errorDiv.textContent = mensaje;
       errorDiv.classList.remove("hidden");
     }
 
     function ocultarError() {
-      errorDiv.classList.add("hidden");
       errorDiv.textContent = "";
+      errorDiv.classList.add("hidden");
     }
   </script>
-
 
 </body>
 </html>
