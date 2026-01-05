@@ -59,7 +59,7 @@
 
       const user = await response.json();
       document.getElementById("userInfo").textContent =
-        `Sesión iniciada como: ${user.email}`;
+        `Sesión iniciada como: ${user.email} (${user.role})`;
     }
 
     // =========================
