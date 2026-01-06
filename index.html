@@ -224,12 +224,9 @@
 
       try {
         const data = await loginRequest(email, pass);
-
-        // Guardar token
-        localStorage.setItem("access_token", data.access_token);
-
-        // Redirección segura
-        window.location.href = "https://s-link-version1-0.netlify.app/";
+        // Redirección a la app pasando el token
+        window.location.href = "https://s-link-version1-0.netlify.app/?token=" + data.access_token;
+        
       } catch (err) {
         mostrarError(err.message);
         buttonText.textContent = "ACCEDER";
