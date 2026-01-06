@@ -1,6 +1,7 @@
 export function requireAuth() {
   const token = localStorage.getItem("access_token");
+
   if (!token) {
-    window.location.href = "/";
+    window.location.replace("https://loginagenda.netlify.app/");
   }
 }
