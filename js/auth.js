@@ -6,10 +6,7 @@ export async function login(email, password) {
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      email,
-      password
-    })
+    body: JSON.stringify({ email, password })
   });
 
   if (!response.ok) {
@@ -17,7 +14,5 @@ export async function login(email, password) {
     throw new Error(err.detail || "Error al iniciar sesión");
   }
 
-  const data = await response.json();
-  localStorage.setItem("access_token", data.access_token);
-  return data;
+  return await response.json(); // devuelve access_token
 }
