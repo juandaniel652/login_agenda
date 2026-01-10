@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://login-agenda-backend.onrender.com/api/v1";
+const API_BASE_URL = "https://agenda-uipe.onrender.com";
 
 export async function login(email, password) {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {

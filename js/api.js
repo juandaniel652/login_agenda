@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://login-agenda-backend.onrender.com/api/v1";
+const API_BASE_URL = "https://agenda-uipe.onrender.com";
 
 export async function apiRequest(endpoint, options = {}) {
   const token = localStorage.getItem("access_token");
