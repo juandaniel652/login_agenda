@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://agenda-uipe.onrender.com";
+const API_BASE_URL = "https://agenda-1-zomu.onrender.com";
 
 export async function apiRequest(endpoint, options = {}) {
   const token = localStorage.getItem("access_token");
